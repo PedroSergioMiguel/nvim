@@ -98,17 +98,37 @@ Antes de instalar, puedes usar el script de PowerShell `check_requirements.ps1` 
 
 ---
 
-## 2. Manejo de Versiones de Java (Java 8 y Superiores)
+## 2. Manejo de Versiones de Java (Java 8, 11, etc.)
 
-Esta configuración está diseñada para manejar múltiples versiones de JDK sin problemas.
+Esta configuración está diseñada para manejar múltiples versiones de JDK sin problemas. El concepto clave es:
 
--   **¿Por qué necesito un JDK moderno (17+)?**
-    El servidor de lenguaje `jdtls` es una aplicación Java que requiere un JDK moderno para funcionar. **Este JDK es solo para ejecutar la herramienta**, no para compilar tu proyecto.
+-   **JDK para Herramientas (17+):** El servidor de lenguaje (`jdtls`) necesita un JDK moderno para **ejecutarse**.
+-   **JDK para Proyectos (8, 11, etc.):** `jdtls`, una vez en ejecución, usará el JDK específico que tu proyecto requiera (definido en `pom.xml` o `build.gradle`).
 
--   **¿Cómo funciona con mi proyecto de Java 8?**
-    Una vez que `jdtls` está en ejecución, es lo suficientemente inteligente como para detectar la versión de Java requerida por tu proyecto (a través de `pom.xml` o `build.gradle`). Automáticamente usará tu instalación de **JDK 8** para compilar, analizar y depurar tu código.
+### Configuración Crítica: Priorizar el JDK Moderno en el PATH
 
-No necesitas ninguna configuración adicional. Simplemente abre tu proyecto de Java 8 y `jdtls` se encargará del resto.
+El script de validación (`check_requirements.ps1`) puede haberte advertido que tu versión de Java por defecto es inferior a la 17. Aquí te explicamos cómo solucionarlo en Windows:
+
+1.  **Abrir la configuración de Variables de Entorno:**
+    -   Presiona `Win + R`, escribe `SystemPropertiesAdvanced.exe` y presiona Enter.
+    -   En la ventana de "Propiedades del Sistema", haz clic en el botón "Variables de entorno...".
+
+2.  **Editar la Variable `Path` del Sistema:**
+    -   En la sección "Variables del sistema", busca y selecciona la variable `Path`.
+    -   Haz clic en "Editar...".
+
+3.  **Priorizar el JDK Moderno:**
+    -   Verás una lista de rutas. Busca la entrada que apunta al directorio `bin` de tu JDK moderno (ej. `C:\Program Files\Microsoft\jdk-21.0.1.12-hotspot\bin`).
+    -   **Súbela a la cima de la lista** usando el botón "Subir".
+    -   Asegúrate de que esté **por encima** de cualquier otra entrada de JDK (como la de Java 8 o la de `C:\ProgramData\Oracle\Java\javapath`).
+    -   Haz clic en "Aceptar" en todas las ventanas para guardar los cambios.
+
+4.  **Verificar el Cambio:**
+    -   **Cierra y vuelve a abrir** tu terminal de PowerShell.
+    -   Ejecuta `java -version`. Ahora deberías ver la versión del JDK moderno (ej. 21).
+    -   Vuelve a ejecutar `.\check_requirements.ps1`. ¡Ahora todo debería salir en verde!
+
+Con esta configuración, `jdtls` se iniciará correctamente, y tus proyectos de Java 8 y 11 seguirán funcionando como siempre.
 
 ---
 

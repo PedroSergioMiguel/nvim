@@ -18,15 +18,15 @@ Write-Host "Este script revisara si tu sistema tiene todas las herramientas"
 Write-Host "necesarias para la configuracion."
 Write-Host
 
-$missingCount = 0
-$suggestionHeaderShown = $false
+$script:missingCount = 0
+$script:suggestionHeaderShown = $false
 
 # Funcion para mostrar el encabezado de sugerencias de instalacion
 function Show-SuggestionHeader {
-    if (-not $suggestionHeaderShown) {
+    if (-not $script:suggestionHeaderShown) {
         Write-Host
         Write-Host "*** Sugerencias de Instalacion (ejecutar en PowerShell como Admin) ***"
-        $Global:suggestionHeaderShown = $true
+        $script:suggestionHeaderShown = $true
     }
 }
 
@@ -42,7 +42,7 @@ function Check-Command {
         Write-HostColored "[EXITO]" "Green"
     } else {
         Write-HostColored "[FALTA]" "Red"
-        $Global:missingCount++
+        $script:missingCount++
         Show-SuggestionHeader
         Write-Host "  - Para instalar $CommandName, usa: $InstallHint"
     }
@@ -58,22 +58,19 @@ Check-Command "mvn" "winget install Apache.Maven"
 Write-Host -NoNewline "[-] Verificando 'java'... "
 if (-not (Get-Command java -ErrorAction SilentlyContinue)) {
     Write-HostColored "[FALTA]" "Red"
-    $Global:missingCount++
+    $script:missingCount++
     Show-SuggestionHeader
     Write-Host "  - Para instalar Java (JDK 17+), usa: winget install Microsoft.OpenJDK.21"
 } else {
     Write-HostColored "[EXITO]" "Green"
     Write-Host -NoNewline "[-] Verificando version de Java (debe ser >= 17 para jdtls)... "
 
-    # Capturar la salida de 'java -version'
     $javaVersionOutput = & java -version 2>&1
     $versionString = $javaVersionOutput | Select-String -Pattern "version"
-
-    # Extraer el numero de version con una expresion regular
     $match = [regex]::Match($versionString, '("(?<version>[\d\._]+)")')
+
     if ($match.Success) {
         $version = $match.Groups['version'].Value
-        # Manejar formatos de version antiguos (1.8) y nuevos (11, 17, etc.)
         if ($version.StartsWith("1.")) {
             $majorVersion = ($version -split '\.')[1]
         } else {
@@ -82,7 +79,7 @@ if (-not (Get-Command java -ErrorAction SilentlyContinue)) {
 
         if ([int]$majorVersion -lt 17) {
             Write-HostColored "[FALLO]" "Red"
-            $Global:missingCount++
+            $script:missingCount++
             Write-Host
             Write-Host "  [!] La version de Java en el PATH es $majorVersion. Se requiere Java 17 o superior." -ForegroundColor "Yellow"
             Write-Host "      Consulta el README.md sobre como manejar multiples versiones de Java." -ForegroundColor "Yellow"
@@ -101,11 +98,11 @@ Write-Host "=                     Resumen de la Verificacion                    
 Write-Host "===================================================================="
 Write-Host
 
-if ($missingCount -eq 0) {
+if ($script:missingCount -eq 0) {
     Write-HostColored "[FELICIDADES] !Tu sistema cumple con todos los requisitos!" "Green"
     Write-Host "Puedes clonar la configuracion de NeoVim y comenzar."
 } else {
-    Write-HostColored "[ATENCION] Se encontraron $missingCount problema(s)." "Yellow"
+    Write-HostColored "[ATENCION] Se encontraron $($script:missingCount) problema(s)." "Yellow"
     Write-Host "Por favor, instala o corrige las herramientas marcadas como [FALTA] o [FALLO]."
     Write-Host "Revisa las sugerencias de instalacion y la guia en README.md."
 }
