@@ -1,176 +1,127 @@
 # Configuración de NeoVim para Desarrollo Java Empresarial (Estilo IntelliJ)
 
-Esta es una configuración completa y moderna de NeoVim diseñada para ser un reemplazo ligero y productivo de IntelliJ IDEA para el desarrollo de Java, Maven y JBoss/WildFly. Es compatible con Windows, macOS y Linux.
+Esta es una configuración completa y moderna de NeoVim diseñada para ser un reemplazo ligero, rápido y productivo de IntelliJ IDEA para el desarrollo de aplicaciones Java empresariales.
 
-## Características
+## Características Principales
 
-- **Ligero y Rápido:** Optimizado para un rendimiento máximo.
-- **LSP Robusto:** Integración completa con `jdtls` para autocompletado, diagnósticos, refactorización y navegación de código.
-- **Depuración Integrada:** Soporte para depuración de aplicaciones Java, Maven y JBoss/WildFly a través de DAP.
-- **Interfaz similar a IntelliJ:** UI/UX cuidadosamente diseñada para emular la apariencia de IntelliJ IDEA.
-- **Productividad:** Incluye herramientas como Telescope (fuzzy finder), LuaSnip (snippets) y Fugitive (integración con Git).
+- **Gestor de Plugins Ligero:** Usa [lazy.nvim](https://github.com/folke/lazy.nvim) para una carga perezosa y un arranque casi instantáneo.
+- **Interfaz de Usuario similar a IntelliJ:**
+    - Tema oscuro profesional ([tokyonight.nvim](https://github.com/folke/tokyonight.nvim)).
+    - Explorador de archivos con iconos ([neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim)).
+    - Barra de estado informativa ([lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)).
+    - Pestañas en la parte superior ([bufferline.nvim](https://github.com/akinsho/bufferline.nvim)).
+    - Guías de indentación visuales.
+- **Soporte Completo para Java:**
+    - **LSP:** Integración total con `jdtls` a través de [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) para autocompletado, diagnósticos, refactorización y navegación de código.
+    - **DAP:** Depurador integrado para Java, Maven y JBoss/WildFly a través de [nvim-dap](https://github.com/mfussenegger/nvim-dap).
+- **Herramientas de Productividad:**
+    - Búsqueda difusa con [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim).
+    - Integración con Git a través de [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim).
 
 ---
 
-## 1. Guía de Instalación (Windows)
+## 1. Requisitos Previos
 
-Esta guía se enfoca en Windows y utiliza el gestor de paquetes `winget`. Abre una **PowerShell como Administrador** para ejecutar estos comandos.
+Asegúrate de tener instalado el siguiente software en tu sistema:
 
-### Paso 0: Validar tu Entorno (Recomendado)
+- **NeoVim (v0.8.0 o superior):** El editor de texto.
+- **Java JDK (v17 o superior):** `jdtls` (el servidor de lenguaje de Java) requiere un JDK moderno para funcionar. **Puedes seguir trabajando en proyectos con Java 8/11/etc.**, pero el *tooling* necesita una versión reciente.
+- **Maven:** Para la gestión de proyectos Java.
+- **Git:** Para el control de versiones y la gestión de plugins.
+- **Nerd Fonts:** Necesarias para que los iconos se muestren correctamente en la interfaz. Descarga e instala una fuente desde [Nerd Fonts](https://www.nerdfonts.com/font-downloads).
+- **Herramientas de compilación:** `gcc`, `make` y `unzip`, que son necesarios para algunos plugins.
 
-Antes de instalar, puedes usar el script de PowerShell `check_requirements.ps1` incluido para verificar si tu sistema cumple con los requisitos.
+---
 
-1.  Descarga o clona este repositorio en cualquier lugar.
-2.  Abre una terminal de PowerShell, navega a la carpeta y ejecuta el script:
-    ```powershell
-    .\check_requirements.ps1
-    ```
-3.  **Nota sobre la Política de Ejecución:** Si recibes un error sobre que la ejecución de scripts está deshabilitada, ejecuta el siguiente comando para permitirla para la sesión actual y vuelve a intentarlo:
-    ```powershell
-    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-    ```
-4.  El script te informará qué herramientas te faltan y te dará sugerencias para instalarlas.
+## 2. Instalación y Configuración
 
-### Paso 1: Instalar Requisitos Previos
+1.  **Haz una copia de seguridad de tu configuración actual (si tienes una):**
+    ```bash
+    # En Linux/macOS
+    mv ~/.config/nvim ~/.config/nvim.bak
 
-1.  **Windows Terminal (Recomendado):**
-    ```powershell
-    winget install Microsoft.WindowsTerminal
+    # En Windows (PowerShell)
+    Move-Item -Path $env:LOCALAPPDATA\nvim -Destination $env:LOCALAPPDATA\nvim.bak
     ```
 
-2.  **NeoVim (v0.8+):**
-    ```powershell
-    winget install Neovim.Neovim
+2.  **Clona este repositorio directamente en tu directorio de configuración de NeoVim:**
+    ```bash
+    # Reemplaza <URL_DEL_REPOSITORIO> con la URL de este proyecto.
+
+    # En Linux/macOS
+    git clone <URL_DEL_REPOSITORIO> ~/.config/nvim
+
+    # En Windows (PowerShell)
+    git clone <URL_DEL_REPOSITORIO> $env:LOCALAPPDATA\nvim
     ```
 
-3.  **Git:**
-    ```powershell
-    winget install Git.Git
-    ```
-
-4.  **Java JDK (Moderno y Java 8):**
-    `jdtls` (el servidor de lenguaje) necesita un JDK moderno (17+) para ejecutarse, pero puede trabajar con proyectos en Java 8.
-    ```powershell
-    # Instalar un JDK moderno (ej. OpenJDK 21)
-    winget install Microsoft.OpenJDK.21
-
-    # Instalar JDK 8 si no lo tienes
-    winget install Amazon.Corretto.8
-    ```
-    *Importante:* Asegúrate de que el JDK moderno (21) sea el que esté configurado en tu variable de entorno `JAVA_HOME` y en el `Path` del sistema para que NeoVim pueda encontrarlo e iniciar `jdtls`.
-
-5.  **Maven/Gradle:**
-    ```powershell
-    # Para Maven
-    winget install Apache.Maven
-
-    # Para Gradle
-    winget install Gradle.Gradle
-    ```
-
-6.  **Node.js y npm:**
-    ```powershell
-    winget install OpenJS.NodeJS
-    ```
-
-7.  **Compilador de C (Build Tools for Visual Studio):**
-    Necesario para que algunos plugins compilen sus dependencias.
-    ```powershell
-    winget install Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --quiet --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
-    ```
-    *Nota:* Cierra y vuelve a abrir tu terminal después de instalar todas estas herramientas para que las variables de entorno se actualicen.
-
-### Paso 2: Clonar la Configuración
-
-1.  Abre PowerShell y clona este repositorio en la siguiente ruta:
-    ```powershell
-    git clone <URL_DEL_REPOSITORIO> $env:USERPROFILE\AppData\Local\nvim
-    ```
-
-### Paso 3: Primer Inicio
-
-1.  Inicia NeoVim desde tu terminal:
-    ```powershell
+3.  **Inicia NeoVim:**
+    Abre NeoVim en tu terminal:
+    ```bash
     nvim
     ```
-2.  La primera vez que se ejecute, el gestor de plugins `lazy.nvim` se instalará y descargará todos los plugins. Espera a que el proceso termine.
-3.  Una vez completado, reinicia NeoVim. `mason.nvim` comenzará a instalar `jdtls`.
+    La primera vez que lo inicies, `lazy.nvim` se instalará automáticamente y luego descargará y configurará todos los plugins definidos en `plugins.lua`. Este proceso puede tardar unos minutos.
 
----
+4.  **Verifica la instalación:**
+    Una vez que `lazy.nvim` termine, reinicia NeoVim. Deberías ver la nueva interfaz de usuario.
 
-## 2. Manejo de Versiones de Java (Java 8, 11, etc.)
-
-Esta configuración está diseñada para manejar múltiples versiones de JDK sin problemas. El concepto clave es:
-
--   **JDK para Herramientas (17+):** El servidor de lenguaje (`jdtls`) necesita un JDK moderno para **ejecutarse**.
--   **JDK para Proyectos (8, 11, etc.):** `jdtls`, una vez en ejecución, usará el JDK específico que tu proyecto requiera (definido en `pom.xml` o `build.gradle`).
-
-### Configuración Crítica: Priorizar el JDK Moderno en el PATH
-
-El script de validación (`check_requirements.ps1`) puede haberte advertido que tu versión de Java por defecto es inferior a la 17. Aquí te explicamos cómo solucionarlo en Windows:
-
-1.  **Abrir la configuración de Variables de Entorno:**
-    -   Presiona `Win + R`, escribe `SystemPropertiesAdvanced.exe` y presiona Enter.
-    -   En la ventana de "Propiedades del Sistema", haz clic en el botón "Variables de entorno...".
-
-2.  **Editar la Variable `Path` del Sistema:**
-    -   En la sección "Variables del sistema", busca y selecciona la variable `Path`.
-    -   Haz clic en "Editar...".
-
-3.  **Priorizar el JDK Moderno:**
-    -   Verás una lista de rutas. Busca la entrada que apunta al directorio `bin` de tu JDK moderno (ej. `C:\Program Files\Microsoft\jdk-21.0.1.12-hotspot\bin`).
-    -   **Súbela a la cima de la lista** usando el botón "Subir".
-    -   Asegúrate de que esté **por encima** de cualquier otra entrada de JDK (como la de Java 8 o la de `C:\ProgramData\Oracle\Java\javapath`).
-    -   Haz clic en "Aceptar" en todas las ventanas para guardar los cambios.
-
-4.  **Verificar el Cambio:**
-    -   **Cierra y vuelve a abrir** tu terminal de PowerShell.
-    -   Ejecuta `java -version`. Ahora deberías ver la versión del JDK moderno (ej. 21).
-    -   Vuelve a ejecutar `.\check_requirements.ps1`. ¡Ahora todo debería salir en verde!
-
-Con esta configuración, `jdtls` se iniciará correctamente, y tus proyectos de Java 8 y 11 seguirán funcionando como siempre.
-
----
-
-## 3. Uso del Debugger (DAP)
-
-La depuración se gestiona a través de un archivo `launch.json` en el directorio `.vscode` de tu proyecto.
-
-### Ejemplo: Depurar una Aplicación Maven (Java 8)
-
-1.  Crea un archivo `.vscode/launch.json` en la raíz de tu proyecto.
-    ```json
-    {
-      "version": "0.2.0",
-      "configurations": [
-        {
-          "type": "java",
-          "name": "Debug (Launch) - MyApplication",
-          "request": "launch",
-          "mainClass": "com.mypackage.MyApplication",
-          "projectName": "my-project-name"
-        }
-      ]
-    }
+    Para verificar que los servidores de lenguaje se han instalado, ejecuta el siguiente comando dentro de NeoVim:
     ```
-2.  Abre el archivo Java, establece un breakpoint con `<leader>db`, y `nvim-dap` te permitirá lanzar esta configuración.
+    :Mason
+    ```
+    Asegúrate de que `jdtls` y `lua-ls` estén en la lista de paquetes instalados.
 
-### Ejemplo: Depurar en JBoss/WildFly (Remote Attach)
+---
 
-1.  Inicia JBoss/WildFly en modo debug (generalmente en el puerto `8787`).
-2.  Crea un `launch.json` para adjuntar el depurador.
+## 3. Uso del Depurador (DAP) para Java
+
+El depurador se integra con el LSP para ofrecer una experiencia fluida. Para depurar, necesitas crear una configuración de lanzamiento.
+
+### Creación de `launch.json`
+
+El depurador de Java utiliza la misma configuración `launch.json` que VS Code.
+
+1.  Abre la paleta de comandos del depurador con `<leader>d` (por ejemplo, `Espacio + d`).
+2.  Para proyectos Maven, la forma más fácil de empezar a depurar es usando las *Code Actions* del LSP. `nvim-jdtls` proporciona acciones para depurar tests o métodos `main`.
+
+### Ejemplo: Depurar una aplicación Maven
+
+1.  Abre el archivo Java que contiene tu método `main`.
+2.  Coloca el cursor sobre el método `main`.
+3.  Ejecuta la acción de código con `<leader>ca`.
+4.  Selecciona la opción "Debug..." en el menú emergente.
+5.  El depurador se iniciará y la interfaz de `nvim-dap-ui` aparecerá.
+
+### Ejemplo: Depurar un servidor JBoss/WildFly remoto
+
+Si tu aplicación se despliega en un servidor de aplicaciones como JBoss/WildFly, puedes conectarte a él de forma remota.
+
+1.  **Inicia JBoss/WildFly en modo de depuración.**
+    Normalmente, esto se hace añadiendo los siguientes argumentos a la JVM al iniciar el servidor:
+    ```bash
+    -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
+    ```
+    Esto le dice a la JVM que escuche conexiones de depuración en el puerto 8000.
+
+2.  **Crea un archivo `.vscode/launch.json` en la raíz de tu proyecto** con la siguiente configuración:
     ```json
     {
       "version": "0.2.0",
       "configurations": [
         {
           "type": "java",
-          "name": "Debug (Attach) - JBoss/WildFly",
+          "name": "Attach to JBoss/WildFly",
           "request": "attach",
-          "hostName": "localhost",
-          "port": 8787
+          "hostName": "localhost", // o la IP del servidor
+          "port": 8000,
+          "projectName": "nombre-del-proyecto-maven" // Opcional pero recomendado
         }
       ]
     }
     ```
-3.  Establece breakpoints y lanza la configuración de "Attach".
+
+3.  **Inicia la sesión de depuración en NeoVim:**
+    - Abre NeoVim en la raíz de tu proyecto.
+    - Presiona `<F5>` (o la tecla que configures para iniciar el depurador).
+    - Selecciona "Attach to JBoss/WildFly" en el menú que aparece.
+    - El depurador se conectará al servidor. Ahora puedes poner breakpoints en tu código y se detendrán cuando el servidor los alcance.
