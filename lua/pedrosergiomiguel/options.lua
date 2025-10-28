@@ -33,7 +33,12 @@ vim.opt.mouse = "a"
 vim.opt.clipboard = "unnamedplus" -- Sincronización con el portapapeles del sistema
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+-- Configuración de directorio de 'undo' compatible con Windows/Linux/macOS
+local undodir_path = os.getenv("HOME")
+if undodir_path == nil then
+  undodir_path = os.getenv("USERPROFILE")
+end
+vim.opt.undodir = undodir_path .. "/.vim/undodir"
 vim.opt.undofile = true
 
 -- Completado
