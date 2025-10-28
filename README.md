@@ -18,14 +18,18 @@ Esta guía se enfoca en Windows y utiliza el gestor de paquetes `winget`. Abre u
 
 ### Paso 0: Validar tu Entorno (Recomendado)
 
-Antes de instalar, puedes usar el script `check_requirements.bat` incluido en este repositorio para verificar si tu sistema ya cumple con los requisitos.
+Antes de instalar, puedes usar el script de PowerShell `check_requirements.ps1` incluido para verificar si tu sistema cumple con los requisitos.
 
 1.  Descarga o clona este repositorio en cualquier lugar.
-2.  Ejecuta el script desde tu terminal:
+2.  Abre una terminal de PowerShell, navega a la carpeta y ejecuta el script:
     ```powershell
-    .\check_requirements.bat
+    .\check_requirements.ps1
     ```
-3.  El script te informará qué herramientas te faltan y te dará sugerencias para instalarlas.
+3.  **Nota sobre la Política de Ejecución:** Si recibes un error sobre que la ejecución de scripts está deshabilitada, ejecuta el siguiente comando para permitirla para la sesión actual y vuelve a intentarlo:
+    ```powershell
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+    ```
+4.  El script te informará qué herramientas te faltan y te dará sugerencias para instalarlas.
 
 ### Paso 1: Instalar Requisitos Previos
 
