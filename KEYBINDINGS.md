@@ -32,7 +32,7 @@ Esta tabla resume los atajos de teclado clave configurados en este entorno de Ne
 | `<leader>ca`      | Ver y ejecutar acciones de código (Code Actions) |
 | `[d`              | Ir al diagnóstico anterior           |
 | `]d`              | Ir al siguiente diagnóstico          |
-| `<leader>e`       | Mostrar detalles del diagnóstico en ventana flotante |
+| `<leader>de`      | Mostrar detalles del diagnóstico en ventana flotante |
 
 ## Debugger (DAP)
 
