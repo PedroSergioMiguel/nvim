@@ -16,6 +16,17 @@ Esta es una configuración completa y moderna de NeoVim diseñada para ser un re
 
 Esta guía se enfoca en Windows y utiliza el gestor de paquetes `winget`. Abre una **PowerShell como Administrador** para ejecutar estos comandos.
 
+### Paso 0: Validar tu Entorno (Recomendado)
+
+Antes de instalar, puedes usar el script `check_requirements.bat` incluido en este repositorio para verificar si tu sistema ya cumple con los requisitos.
+
+1.  Descarga o clona este repositorio en cualquier lugar.
+2.  Ejecuta el script desde tu terminal:
+    ```powershell
+    .\check_requirements.bat
+    ```
+3.  El script te informará qué herramientas te faltan y te dará sugerencias para instalarlas.
+
 ### Paso 1: Instalar Requisitos Previos
 
 1.  **Windows Terminal (Recomendado):**
