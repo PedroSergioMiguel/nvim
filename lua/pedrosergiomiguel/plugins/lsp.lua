@@ -1,16 +1,36 @@
 -- ~/.config/nvim/lua/pedrosergiomiguel/plugins/lsp.lua
 
 return {
+  -- Mason: para gestionar la instalación de LSPs, DAPs, linters, etc.
   {
-    "neovim/nvim-lspconfig",
+    "williamboman/mason.nvim",
+    config = function()
+      require("mason").setup()
+    end,
+  },
+
+  -- nvim-lspconfig: el motor principal para configurar los LSPs.
+  { "neovim/nvim-lspconfig" },
+
+  -- nvim-jdtls: herramientas específicas para el LSP de Java.
+  { "mfussenegger/nvim-jdtls" },
+
+  -- mason-lspconfig: el puente que conecta Mason (instaladores) con lspconfig (configurador).
+  -- Este plugin orquesta la configuración y debe depender de los otros.
+  {
+    "williamboman/mason-lspconfig.nvim",
     dependencies = {
+      "neovim/nvim-lspconfig",
       "williamboman/mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
-      "mfussenegger/nvim-jdtls", -- Dependencia para la configuración de Java
+      "mfussenegger/nvim-jdtls",
     },
     config = function()
-      -- Función on_attach: se ejecuta cuando un LSP se adjunta a un buffer
-      local on_attach = function(client, bufnr)
+      -- Define las capacidades que el cliente (Neovim) ofrece al servidor (LSP).
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+      -- Define la función que se ejecutará cada vez que un LSP se adjunte a un buffer.
+      -- Aquí es donde se definen los atajos de teclado específicos del LSP.
+      local on_attach = function(_, bufnr)
         local map = vim.keymap.set
         local opts = { noremap = true, silent = true, buffer = bufnr }
 
@@ -19,25 +39,14 @@ return {
         map("n", "K", vim.lsp.buf.hover, { desc = "Mostrar documentación flotante" })
         map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Renombrar símbolo" })
         map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Acciones de código" })
-        map("n", "gr", vim.lsp.buf.references, { desc = "Mostrar referencias" })
-
-        if client.supports_method("textDocument/formatting") then
-          map("n", "<leader>f", function() vim.lsp.buf.format { async = true } end, { desc = "Formatear código" })
-        end
       end
 
-      -- Capacidades del cliente LSP (para nvim-cmp)
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-      -- Configuración de Mason y Mason-LSPConfig
-      require("mason").setup()
+      -- Configura mason-lspconfig para que use "handlers" para cada servidor.
+      -- Esta es la forma moderna y robusta de configurar los LSPs.
       require("mason-lspconfig").setup({
-        ensure_installed = {
-          "jdtls",
-          "lua_ls",
-        },
+        ensure_installed = { "jdtls", "lua_ls" },
         handlers = {
-          -- Configuración por defecto para la mayoría de los servidores
+          -- Handler por defecto para la mayoría de los servidores.
           function(server_name)
             require("lspconfig")[server_name].setup({
               on_attach = on_attach,
@@ -45,36 +54,13 @@ return {
             })
           end,
 
-          -- Configuración específica para Lua
-          ["lua_ls"] = function()
-            require("lspconfig").lua_ls.setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-              settings = {
-                Lua = {
-                  diagnostics = { globals = { "vim" } },
-                },
-              },
-            })
-          end,
-
-          -- Configuración AVANZADA y específica para Java (jdtls)
+          -- Handler específico y avanzado para Java (jdtls).
           ["jdtls"] = function()
             require("lspconfig").jdtls.setup({
               on_attach = on_attach,
               capabilities = capabilities,
-              cmd = { 'jdtls' },
               root_dir = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'}),
-              settings = {
-                java = {
-                  sources = {
-                    organizeImports = {
-                      starThreshold = 9999,
-                      staticStarThreshold = 9999,
-                    },
-                  },
-                }
-              },
+              -- Habilita el soporte para depuración (nvim-dap).
               init_options = {
                 bundles = {
                   vim.fn.glob(vim.fn.stdpath('data') .. '/mason/packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar', 1)
@@ -82,7 +68,7 @@ return {
               }
             })
           end,
-        }
+        },
       })
     end,
   },
