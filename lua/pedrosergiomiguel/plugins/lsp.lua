@@ -22,7 +22,10 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    dependencies = { "williamboman/mason-lspconfig.nvim" },
+    dependencies = {
+      "williamboman/mason-lspconfig.nvim",
+      "mfussenegger/nvim-jdtls", -- Dependencia para la configuración de Java
+    },
     config = function ()
       local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()

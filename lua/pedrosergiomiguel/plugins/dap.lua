@@ -3,31 +3,38 @@
 return {
   {
     "mfussenegger/nvim-dap",
+    config = function()
+      local dap = require("dap")
+      -- Atajos de teclado para el depurador
+      local map = vim.keymap.set
+      map("n", "<leader>db", dap.toggle_breakpoint, { desc = "Añadir/Quitar breakpoint" })
+      map("n", "<leader>dc", dap.continue, { desc = "Continuar ejecución" })
+      map("n", "<leader>di", dap.step_into, { desc = "Entrar en función (Step Into)" })
+      map("n", "<leader>do", dap.step_over, { desc = "Pasar por encima (Step Over)" })
+      map("n", "<leader>dO", dap.step_out, { desc = "Salir de función (Step Out)" })
+      map("n", "<leader>dr", dap.repl.open, { desc = "Abrir REPL" })
+      map("n", "<leader>dl", dap.run_last, { desc = "Ejecutar última configuración" })
+    end,
+  },
+  {
+    "rcarriga/nvim-dap-ui",
     dependencies = {
-      "rcarriga/nvim-dap-ui",
+      "mfussenegger/nvim-dap",
+      "nvim-neotest/nvim-nio", -- Dependencia requerida por nvim-dap-ui
     },
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
 
-      -- Configurar la interfaz de usuario del depurador (DAP UI)
       dapui.setup({
         layouts = {
           {
-            elements = {
-              { id = "scopes", size = 0.25 },
-              { id = "breakpoints", size = 0.25 },
-              { id = "stacks", size = 0.25 },
-              { id = "watches", size = 0.25 },
-            },
+            elements = { "scopes", "breakpoints", "stacks", "watches" },
             size = 40,
             position = "left",
           },
           {
-            elements = {
-              { id = "repl", size = 0.5 },
-              { id = "console", size = 0.5 },
-            },
+            elements = { "repl", "console" },
             size = 10,
             position = "bottom",
           },
@@ -45,16 +52,8 @@ return {
         dapui.close()
       end
 
-      -- Atajos de teclado para el depurador
-      local map = vim.keymap.set
-      map("n", "<leader>db", dap.toggle_breakpoint, { desc = "Añadir/Quitar breakpoint" })
-      map("n", "<leader>dc", dap.continue, { desc = "Continuar ejecución" })
-      map("n", "<leader>di", dap.step_into, { desc = "Entrar en función (Step Into)" })
-      map("n", "<leader>do", dap.step_over, { desc = "Pasar por encima (Step Over)" })
-      map("n", "<leader>dO", dap.step_out, { desc = "Salir de función (Step Out)" })
-      map("n", "<leader>dr", dap.repl.open, { desc = "Abrir REPL" })
-      map("n", "<leader>dl", dap.run_last, { desc = "Ejecutar última configuración" })
-      map("n", "<leader>du", dapui.toggle, { desc = "Abrir/Cerrar UI del depurador" })
+      -- Atajo de teclado para la UI del depurador
+      vim.keymap.set("n", "<leader>du", dapui.toggle, { desc = "Abrir/Cerrar UI del depurador" })
     end,
   },
 }
