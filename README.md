@@ -10,118 +10,109 @@ Esta es una configuración completa y moderna de NeoVim diseñada para ser un re
     - Explorador de archivos con iconos ([neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim)).
     - Barra de estado informativa ([lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)).
     - Pestañas en la parte superior ([bufferline.nvim](https://github.com/akinsho/bufferline.nvim)).
-    - Guías de indentación visuales.
 - **Soporte Completo para Java:**
-    - **LSP:** Integración total con `jdtls` a través de [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) para autocompletado, diagnósticos, refactorización y navegación de código.
-    - **DAP:** Depurador integrado para Java, Maven y JBoss/WildFly a través de [nvim-dap](https://github.com/mfussenegger/nvim-dap).
+    - **LSP:** Integración total con `jdtls` para autocompletado, diagnósticos y refactorización.
+    - **DAP:** Depurador visual integrado para Java a través de [nvim-dap](https://github.com/mfussenegger/nvim-dap).
 - **Herramientas de Productividad:**
     - Búsqueda difusa con [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim).
-    - Integración con Git a través de [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim).
+    - Integración con Git a través de [lazygit.nvim](https://github.com/kdheepak/lazygit.nvim) y [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim).
+    - Asistencia de IA con [Copilot](https://github.com/github/copilot.vim).
 
 ---
 
 ## 1. Requisitos Previos
 
-Asegúrate de tener instalado el siguiente software en tu sistema:
-
-- **NeoVim (v0.8.0 o superior):** El editor de texto.
-- **Java JDK (v17 o superior):** `jdtls` (el servidor de lenguaje de Java) requiere un JDK moderno para funcionar. **Puedes seguir trabajando en proyectos con Java 8/11/etc.**, pero el *tooling* necesita una versión reciente.
-- **Maven:** Para la gestión de proyectos Java.
-- **Git:** Para el control de versiones y la gestión de plugins.
-- **Nerd Fonts:** Necesarias para que los iconos se muestren correctamente en la interfaz. Descarga e instala una fuente desde [Nerd Fonts](https://www.nerdfonts.com/font-downloads).
-- **Herramientas de compilación:** `gcc`, `make` y `unzip`, que son necesarios para algunos plugins.
+- **NeoVim (v0.8.0 o superior)**
+- **Java JDK (v17 o superior):** `jdtls` (el servidor de lenguaje) necesita un JDK moderno para funcionar, aunque puedes seguir desarrollando en proyectos con Java 8/11.
+- **Maven**
+- **Git**
+- **Nerd Fonts:** Necesarias para que los iconos se muestren correctamente. Descarga una desde [Nerd Fonts](https://www.nerdfonts.com/font-downloads).
+- **Herramientas de compilación:** `gcc`, `make`, `unzip`.
+- **(Opcional) Lazygit:** Para usar la interfaz de Git. Sigue las instrucciones de instalación en su [repositorio](https://github.com/jesseduffield/lazygit).
 
 ---
 
-## 2. Instalación y Configuración
+## 2. Instalación
 
-1.  **Haz una copia de seguridad de tu configuración actual (si tienes una):**
+1.  **Haz una copia de seguridad de tu configuración actual:**
     ```bash
-    # En Linux/macOS
+    # Linux/macOS
     mv ~/.config/nvim ~/.config/nvim.bak
-
-    # En Windows (PowerShell)
+    # Windows (PowerShell)
     Move-Item -Path $env:LOCALAPPDATA\nvim -Destination $env:LOCALAPPDATA\nvim.bak
     ```
 
-2.  **Clona este repositorio directamente en tu directorio de configuración de NeoVim:**
+2.  **Clona este repositorio en tu directorio de configuración:**
     ```bash
     # Reemplaza <URL_DEL_REPOSITORIO> con la URL de este proyecto.
-
-    # En Linux/macOS
     git clone <URL_DEL_REPOSITORIO> ~/.config/nvim
-
-    # En Windows (PowerShell)
-    git clone <URL_DEL_REPOSITORIO> $env:LOCALAPPDATA\nvim
     ```
 
 3.  **Inicia NeoVim:**
-    Abre NeoVim en tu terminal:
     ```bash
     nvim
     ```
-    La primera vez que lo inicies, `lazy.nvim` se instalará automáticamente y luego descargará y configurará todos los plugins definidos en `plugins.lua`. Este proceso puede tardar unos minutos.
+    La primera vez, `lazy.nvim` se instalará y descargará todos los plugins. Este proceso puede tardar unos minutos. Una vez terminado, reinicia NeoVim.
 
-4.  **Verifica la instalación:**
-    Una vez que `lazy.nvim` termine, reinicia NeoVim. Deberías ver la nueva interfaz de usuario.
-
-    Para verificar que los servidores de lenguaje se han instalado, ejecuta el siguiente comando dentro de NeoVim:
-    ```
-    :Mason
-    ```
-    Asegúrate de que `jdtls` y `lua-ls` estén en la lista de paquetes instalados.
+4.  **Verifica la instalación de los LSPs:**
+    Ejecuta `:Mason` dentro de NeoVim y asegúrate de que `jdtls` y `lua-ls` estén instalados.
 
 ---
 
-## 3. Uso del Depurador (DAP) para Java
+## 3. Atajos de Teclado Principales
 
-El depurador se integra con el LSP para ofrecer una experiencia fluida. Para depurar, necesitas crear una configuración de lanzamiento.
+La tecla "Líder" está mapeada a la **barra espaciadora**.
 
-### Creación de `launch.json`
+| Atajo                 | Acción                                         |
+| --------------------- | ---------------------------------------------- |
+| **Navegación**        |                                                |
+| `<Leader>e`           | Abrir/Cerrar el explorador de archivos         |
+| `<Tab>` / `<S-Tab>`   | Moverse entre pestañas (buffers)               |
+| `<C-h/j/k/l>`         | Moverse entre ventanas divididas               |
+| **Búsqueda**          |                                                |
+| `<Leader>ff`          | Buscar archivos en el proyecto                 |
+| `<Leader>fg`          | Buscar texto en el proyecto                    |
+| **Git**               |                                                |
+| `<Leader>lg`          | Abrir la interfaz de Lazygit                   |
+| **LSP (Código)**      |                                                |
+| `gd`                  | Ir a la definición                             |
+| `K`                   | Mostrar documentación (al pasar el cursor)     |
+| `gr`                  | Mostrar referencias del símbolo                 |
+| `<Leader>ca`          | Ver acciones de código disponibles (refactor, etc.) |
+| `<Leader>rn`          | Renombrar símbolo                              |
+| **Depurador (DAP)**   |                                                |
+| `<Leader>db`          | Poner/Quitar un punto de interrupción (breakpoint) |
+| `<Leader>dc`          | Iniciar o continuar la ejecución               |
+| `<Leader>di` / `<leader>do` | Entrar (Step In) / Salir (Step Out) de una función |
+| `<Leader>du`          | Abrir/Cerrar la interfaz del depurador         |
 
-El depurador de Java utiliza la misma configuración `launch.json` que VS Code.
+---
 
-1.  Abre la paleta de comandos del depurador con `<leader>d` (por ejemplo, `Espacio + d`).
-2.  Para proyectos Maven, la forma más fácil de empezar a depurar es usando las *Code Actions* del LSP. `nvim-jdtls` proporciona acciones para depurar tests o métodos `main`.
+## 4. Uso del Depurador (Java)
 
-### Ejemplo: Depurar una aplicación Maven
+1.  **Pon un punto de interrupción:** Ve a la línea donde quieres que se detenga la ejecución y presiona `<Leader>db`.
+2.  **Inicia la depuración:** Coloca el cursor sobre un método `main` o un test de JUnit.
+3.  Presiona `<Leader>ca` para abrir las acciones de código y selecciona la opción "Debug...".
+4.  La ejecución se detendrá en tu punto de interrupción y la interfaz del depurador aparecerá, permitiéndote inspeccionar variables y controlar el flujo.
 
-1.  Abre el archivo Java que contiene tu método `main`.
-2.  Coloca el cursor sobre el método `main`.
-3.  Ejecuta la acción de código con `<leader>ca`.
-4.  Selecciona la opción "Debug..." en el menú emergente.
-5.  El depurador se iniciará y la interfaz de `nvim-dap-ui` aparecerá.
+### Depuración Remota (JBoss/WildFly)
 
-### Ejemplo: Depurar un servidor JBoss/WildFly remoto
+Puedes conectarte a un servidor remoto que se esté ejecutando en modo de depuración.
 
-Si tu aplicación se despliega en un servidor de aplicaciones como JBoss/WildFly, puedes conectarte a él de forma remota.
-
-1.  **Inicia JBoss/WildFly en modo de depuración.**
-    Normalmente, esto se hace añadiendo los siguientes argumentos a la JVM al iniciar el servidor:
-    ```bash
-    -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
-    ```
-    Esto le dice a la JVM que escuche conexiones de depuración en el puerto 8000.
-
-2.  **Crea un archivo `.vscode/launch.json` en la raíz de tu proyecto** con la siguiente configuración:
+1.  **Inicia tu servidor JBoss/WildFly en modo de depuración** (normalmente con flags como `-agentlib:jdwp=...`).
+2.  **Crea un archivo `.vscode/launch.json`** en la raíz de tu proyecto con una configuración de tipo "attach":
     ```json
     {
       "version": "0.2.0",
       "configurations": [
         {
           "type": "java",
-          "name": "Attach to JBoss/WildFly",
+          "name": "Attach to JBoss",
           "request": "attach",
-          "hostName": "localhost", // o la IP del servidor
-          "port": 8000,
-          "projectName": "nombre-del-proyecto-maven" // Opcional pero recomendado
+          "hostName": "localhost",
+          "port": 8000
         }
       ]
     }
     ```
-
-3.  **Inicia la sesión de depuración en NeoVim:**
-    - Abre NeoVim en la raíz de tu proyecto.
-    - Presiona `<F5>` (o la tecla que configures para iniciar el depurador).
-    - Selecciona "Attach to JBoss/WildFly" en el menú que aparece.
-    - El depurador se conectará al servidor. Ahora puedes poner breakpoints en tu código y se detendrán cuando el servidor los alcance.
+3.  En NeoVim, presiona `<Leader>dc` y selecciona la configuración "Attach to JBoss". El depurador se conectará al servidor.

@@ -13,8 +13,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Cargar configuración modular
-require("pedrosergiomiguel.options")
-require("pedrosergiomiguel.keymaps")
+require("pedrosergiomiguel.core.options")
+require("pedrosergiomiguel.core.keymaps")
 
 -- Cargar plugins con lazy.nvim
 require("lazy").setup("pedrosergiomiguel.plugins")

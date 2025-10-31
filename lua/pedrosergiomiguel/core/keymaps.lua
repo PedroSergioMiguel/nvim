@@ -29,6 +29,3 @@ map("i", "jk", "<ESC>", { desc = "Salir del modo inserción" })
 -- Mover líneas seleccionadas
 map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Mover línea hacia abajo" })
 map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Mover línea hacia arriba" })
-
-
-print("Atajos de teclado cargados.")

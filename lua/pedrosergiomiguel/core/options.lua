@@ -47,5 +47,3 @@ vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- Tiempos de espera
 vim.opt.updatetime = 300
 vim.opt.timeoutlen = 500
-
-print("Opciones de Neovim cargadas.")
