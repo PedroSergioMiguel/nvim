@@ -4,6 +4,7 @@ return {
   -- Git
   {
     "lewis6991/gitsigns.nvim",
+    event = "VeryLazy", -- Cargar de forma perezosa para evitar conflictos
     config = function()
       require("gitsigns").setup()
     end
